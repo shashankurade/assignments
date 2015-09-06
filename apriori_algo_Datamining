@@ -1,0 +1,438 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package datamining;
+
+import java.util.*;
+import java.io.*;
+ class Transaction {
+    int id;
+    ArrayList<Character> arr;
+
+    public Transaction(int i) {
+        this.arr = new ArrayList<Character>();
+        this.id=i+1;
+       
+      //  char ch = (char) System.in.read();
+        System.out.println("Enter items of transaction "+id+"=");
+       while(true){
+        Scanner scn = new Scanner(System.in);
+        String str = scn.nextLine();
+        if(str.equals("\\"))
+            break;
+             
+            if(str.charAt(0)<'a'&&str.charAt(0)>'g')
+            {
+                System.out.println("Enter proper character");
+                continue;
+            }
+            this.arr.add(str.charAt(0));
+        }      
+    }    
+     
+    public void display(){
+        System.out.print(this.id+"    ");
+        for(int i=0;i<this.arr.size();i++)
+        {
+            System.out.print(this.arr.get(i));
+            if(i==this.arr.size()-1)
+                break;
+            System.out.print(", ");
+     
+        //  for (int i : this.arr)
+        // System.out.print(i);
+        }
+        System.out.println();
+    }
+}
+
+
+
+class Myhset{
+    int freq;
+    Set<Character> hset=new HashSet<Character>();
+    
+    void setDisplay(){
+        if(this==null)
+            return;
+        int i=0;
+        for(char ch : hset)
+        {
+            System.out.print(ch);
+            i++;
+            if(i==this.hset.size())
+                break;
+            System.out.print(", ");
+     
+        //  for (int i : this.arr)
+        // System.out.print(i);
+        }
+        System.out.print("          "+this.freq);
+        System.out.println();
+        
+    }
+}
+
+class Rule{
+    ArrayList<Character> lset=new ArrayList<Character>();
+    Set<Character> rset=new HashSet<>();
+    double conf;
+    
+}
+
+
+class Datamining{
+    static int cnf;
+    static int thr;
+    static int count=0;
+    static Myhset[] getC(int j, Myhset templ[], int n, Transaction obj[],int index)
+    {
+         int k=0; int l=1; 
+        int six=(j*(j-1)/2);
+        //System.out.println(triplets);
+        Myhset c5[]=new Myhset[six];
+        for(int i=0;i<six;i++)
+        {
+            c5[i]=new Myhset();
+           // System.out.println("hello");
+            if(l==j)
+                {k++;l=k+1;}
+            c5[i].hset.addAll(templ[k].hset);
+            c5[i].hset.addAll(templ[l].hset);
+            l++;
+         //   System.out.println(c2[i].hset.size());
+            if(c5[i].hset.size()!=index)
+               c5[i]=null;
+        }
+        
+        
+        for(int i=0;i<six;i++){
+            if(c5[i]==null)
+                    continue;
+            for( int t=i+1;t<six;t++){
+                boolean chk=true;
+                if(c5[t]==null)
+                    continue;
+            for(char ch: c5[t].hset)
+                chk&=c5[i].hset.contains(ch);
+            
+              if(chk==true)
+                  c5[t]=null;
+             }      
+        }
+       
+        
+        
+        
+        
+         for(int i=0;i<n;i++){
+            for( int t=0;t<six;t++){
+                boolean chk=true;
+                if(c5[t]==null)
+                    continue;
+            for(char ch: c5[t].hset)
+                chk&=obj[i].arr.contains(ch);
+            
+              if(chk==true)
+              {
+                 // System.out.println();
+                  c5[t].freq++;
+                 //  System.out.println(c4[t].freq);
+             } 
+            }  
+        }
+       
+        
+        
+        
+       
+            
+        
+         System.out.println("\n\nC"+(index-1)+"\nItem"+"             Frequency");
+        for(int i=0;i<six;i++)
+        {
+            if(c5[i]==null)
+                    continue;
+            c5[i].setDisplay();
+        } 
+       
+        return c5;
+        
+    }
+    
+    
+    static Myhset[] getL(int j, Myhset tempc[], int n, Transaction obj[],int index )
+    {
+       int  five=j*(j-1)/2;
+          Myhset l4[]=new Myhset[five];
+       
+        j=0;
+        for(int i=0;i<five;i++)
+        {
+            if(tempc[i]==null)
+                    continue;
+            if(tempc[i].freq>=thr)
+            {
+                l4[j]=new Myhset();
+                l4[j]=tempc[i];
+                //l0[j].al=item[i].al;
+                //l0[j].freq=item[i].freq;
+                j++;
+            }
+        }
+        
+        
+       
+        System.out.println("\n\nL"+(index-1)+"\nItem"+"             Frequency");
+        for(int i=0;i<j;i++)
+            l4[i].setDisplay(); 
+       
+         
+      return l4;
+        
+    }
+
+    
+    
+    void rules( Myhset l)
+    {
+        System.out.print("Enter confidence value(%) =");
+        Scanner x = new Scanner(System.in);
+        int cnf=x.nextInt();
+        
+       
+    
+    }
+    
+    
+    public static void main(String[] args)
+    {
+
+        System.out.println("Enter minimum threshold(% value)");
+        Scanner x = new Scanner(System.in);
+         thr=x.nextInt();
+         
+          System.out.println("Enter minimum confidence(% value)");
+        Scanner x1 = new Scanner(System.in);
+         cnf=x1.nextInt();
+         
+          //thr=Math.round(thr*n/(float)100);
+        System.out.println("Enter total number of transactions to be performed");
+        Scanner in = new Scanner(System.in);
+        int n=in.nextInt();
+         thr=Math.round(thr*n/(float)100);
+       // System.out.println("Use only 5 or less items in dataset
+        System.out.println("Press \\ when done.");
+
+        Transaction obj[]=new Transaction[n];
+        for(int i=0;i<n;i++)
+        obj[i] =new Transaction(i);
+        
+        //display input
+        System.out.println("Given dataset of transactions");
+         System.out.println("\nTrID"+"      Items");
+        for(int i=0;i<n;i++)
+        obj[i].display(); 
+        
+        //remove duplicares
+       
+        Set<Character> hstemp = new HashSet<>();
+        for(int i=0;i<n;i++){
+        Set<Character> hs = new HashSet<>();
+        //Set<Character> hstemp = new HashSet<>();
+        hs.addAll(obj[i].arr);
+        hstemp.addAll(obj[i].arr);
+        obj[i].arr.clear();
+        obj[i].arr.addAll(hs);
+        }
+         int  maxsize=hstemp.size();
+        //C0
+        ArrayList<Character> temp=new ArrayList<Character>();
+        int totalItems=0;
+        for(int i=0;i<n;i++)
+        totalItems+=obj[i].arr.size(); 
+       // System.out.println(totalItems);
+        for(int i=0;i<n;i++){
+            for(int j=0 ; j<obj[i].arr.size();j++)
+                temp.add(obj[i].arr.get(j));
+        }
+        
+        ArrayList<Character> distemp=new ArrayList<Character>();
+        Set<Character> hs = new HashSet<>();
+        hs.addAll(temp);
+        distemp.addAll(hs);
+        
+        //frequency
+        Myhset item[]=new Myhset[distemp.size()];
+        for(int i=0;i<distemp.size();i++)
+            item[i]=new Myhset();
+        
+        for(int i=0;i<distemp.size();i++){
+            
+            int freq=Collections.frequency(temp, distemp.get(i));
+           item[i].freq=freq;
+           item[i].hset.add(distemp.get(i));
+        }
+        System.out.println("\n\nC0\nItem"+"  Frequency");
+        for(int i=0;i<distemp.size();i++)
+            item[i].setDisplay(); 
+        
+        //Lo
+        
+        Myhset l0[]=new Myhset[distemp.size()];
+       
+       
+       // System.out.println("/nthreshold="+t);
+        int j=0;
+        for(int i=0;i<distemp.size();i++)
+        {
+            if(item[i].freq>=thr)
+            {
+                l0[j]=new Myhset();
+                l0[j]=item[i];
+                //l0[j].al=item[i].al;
+                //l0[j].freq=item[i].freq;
+                j++;
+            }
+        }
+       count+=j;
+        
+        System.out.println("\n\nL0\nItem"+"  Frequency");
+        for(int i=0;i<j;i++)
+            l0[i].setDisplay(); 
+        
+                if(maxsize==1||j==1){
+            System.err.println("\n\nTotal L count = "+count);
+            return;
+        }
+                else
+                     System.out.println("\n\nTotal L count = "+count);
+        
+                
+                int index=2;
+                
+    //c1
+           do     {
+        
+                int duplets=(j*(j-1)/2);
+                Myhset c1[]=getC(j, l0, n, obj,index);
+                //System.out.println(c1.length);
+                int c=0;
+                for( int i=0;i<c1.length;i++)
+                {
+                    if(c1[i]!=null)
+                        c++;
+                }
+                if(c==1&&c1[0].freq==0)
+                    break;
+        
+        //L1
+        
+                Myhset l1[]=getL(j, c1, n, obj,index);
+                j=0;
+               
+                for(int i=0;i<l1.length;i++)
+                {
+
+                    //System.out.println(l2[i]);
+                    //System.out.println(j);
+                    if(l1[i]!=null)
+                        j++;
+                    }
+                    count+=j;
+               l0=l1;
+               index++;
+               
+           }
+           while (j>1) ;            
+            
+ 
+              
+         System.out.println("\n\nTotal L count = "+count);
+         
+            int c=0;
+                for( int i=0;i<l0.length;i++)
+                {
+                    if(l0[i]!=null)
+                        c++;
+                }
+                
+                
+         //Rules Generation
+          System.out.println("\n\nRules generated are : ");  
+        
+         for(int rule=0;rule<c;rule++)
+         {    
+         int size=l0[rule].hset.size();
+         int pSize=(int)Math.pow(2,size);
+         int q=1;
+         Rule r[]=new Rule[pSize-1];
+         ArrayList<Character> arrl=new ArrayList<Character>();
+         arrl.addAll(l0[rule].hset);
+         
+    //   System.out.println(r.length);
+      
+         for(int i=0;i<r.length;i++){
+             r[i]=new Rule();
+             for(int p=0;p<size;p++)
+             {
+                // System.out.println(i+" & "+(1<<p)+"=  "+(i & (1<<p)));
+                 if((i & (1<<p))!=0) 
+                    //System.out.print(arrl.get(p));
+                     
+                    r[i].lset.add(arrl.get(p));
+                    // System.out.println(r[i]);
+             }
+            
+         }
+         
+         for(int i=1;i<r.length;i++){
+             
+             for(char ch: l0[rule].hset)
+             {
+                 if(r[i].lset.contains(ch))
+                    continue;
+                 r[i].rset.add(ch);
+                     
+                }
+             
+             r[i].conf=l0[rule].freq/getSupport(r[i].lset,obj);
+         }
+         
+         //Possible rules and its stats
+         
+         /*
+            for(int i=0;i<r.length;i++){
+             System.out.print(r[i].lset+"  "+r[i].rset+"   "+r[i].conf+"\n");
+         }
+          */  
+         
+         printRules(r);
+         
+         }
+        
+    }
+    static double getSupport(ArrayList<Character> lset,Transaction obj[]){
+        double c=0;
+        for(int i=0;i<obj.length;i++)
+        {
+            boolean chk=true;
+           for(char ch: lset)
+                chk&=obj[i].arr.contains(ch);
+           if(chk==true)
+               c++;
+        }
+        return c;
+    }
+    
+    static void printRules(Rule[] r){
+        
+        for(int i=1;i<r.length;i++){
+             if(r[i].conf>=(cnf/100.0))
+             System.out.print(r[i].lset+" -> "+r[i].rset+"   "+r[i].conf+"\n");
+    }
+    }
+}
